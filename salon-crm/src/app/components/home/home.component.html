@@ -1,0 +1,52 @@
+<div class="layout" [class.collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">✦</span>
+      <span class="brand-name" *ngIf="!sidebarCollapsed">Lumière</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.route"
+         class="nav-item"
+         [class.active]="isActive(item.route)">
+        <span class="material-icons">{{item.icon}}</span>
+        <span class="nav-label" *ngIf="!sidebarCollapsed">{{item.label}}</span>
+        <span class="active-indicator" *ngIf="isActive(item.route)"></span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <div class="user-avatar">{{auth.currentUser?.name?.charAt(0)}}</div>
+        <div class="user-details">
+          <span class="user-name">{{auth.currentUser?.name}}</span>
+          <span class="user-role">{{auth.currentUser?.role}}</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()" title="Logout">
+        <span class="material-icons">logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="topbar">
+      <button class="collapse-btn" (click)="sidebarCollapsed = !sidebarCollapsed">
+        <span class="material-icons">{{sidebarCollapsed ? 'menu_open' : 'menu'}}</span>
+      </button>
+      <div class="topbar-right">
+        <div class="date-display">
+          <span class="material-icons">calendar_today</span>
+          {{today | date:'EEEE, MMMM d, yyyy'}}
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

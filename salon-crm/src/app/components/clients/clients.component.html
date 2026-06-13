@@ -1,0 +1,62 @@
+<div class="clients-page">
+  <div class="page-header">
+    <div>
+      <h2>Clients</h2>
+      <p>{{filtered.length}} client{{filtered.length !== 1 ? 's' : ''}}</p>
+    </div>
+    <button class="btn btn-rose">
+      <span class="material-icons">person_add</span> Add Client
+    </button>
+  </div>
+
+  <div class="filters card">
+    <div class="search-wrap">
+      <span class="material-icons">search</span>
+      <input type="text" [(ngModel)]="search" placeholder="Search by name, phone or email…">
+    </div>
+  </div>
+
+  <div class="clients-grid">
+    <div *ngFor="let c of filtered" class="client-card card">
+      <div class="client-top">
+        <div class="client-avatar-lg">{{c.name.charAt(0)}}</div>
+        <div class="client-info">
+          <h3>{{c.name}}</h3>
+          <p><span class="material-icons">phone</span>{{c.phone}}</p>
+          <p><span class="material-icons">email</span>{{c.email}}</p>
+        </div>
+      </div>
+
+      <div class="client-stats">
+        <div class="cstat">
+          <div class="cstat-val">{{c.visits}}</div>
+          <div class="cstat-lbl">Visits</div>
+        </div>
+        <div class="cstat-div"></div>
+        <div class="cstat">
+          <div class="cstat-val">₹{{getTotalSpend(c.id) | number}}</div>
+          <div class="cstat-lbl">Spent</div>
+        </div>
+        <div class="cstat-div"></div>
+        <div class="cstat">
+          <div class="cstat-val">{{c.lastVisit ? (c.lastVisit | date:'MMM d') : '—'}}</div>
+          <div class="cstat-lbl">Last Visit</div>
+        </div>
+      </div>
+
+      <div class="last-service" *ngIf="getLastService(c.id) !== '—'">
+        <span class="material-icons">spa</span>
+        Last: {{getLastService(c.id)}}
+      </div>
+
+      <div *ngIf="c.notes" class="client-notes">
+        <span class="material-icons">notes</span> {{c.notes}}
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="filtered.length === 0">
+    <span class="material-icons">people_outline</span>
+    <p>No clients found</p>
+  </div>
+</div>

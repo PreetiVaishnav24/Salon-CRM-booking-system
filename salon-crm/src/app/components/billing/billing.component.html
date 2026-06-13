@@ -1,0 +1,147 @@
+<div class="billing-page" *ngIf="appointment">
+  <div class="page-header no-print">
+    <div>
+      <h2>Billing</h2>
+      <p>Generate and share the invoice</p>
+    </div>
+    <button class="btn btn-outline" (click)="back()">
+      <span class="material-icons">arrow_back</span> Back
+    </button>
+  </div>
+
+  <div class="billing-layout">
+    <!-- Bill preview -->
+    <div class="bill-preview card" id="bill-print">
+      <!-- Header -->
+      <div class="bill-header">
+        <div class="salon-brand">
+          <div class="salon-icon">✦</div>
+          <div>
+            <h1>Lumière</h1>
+            <p>Salon & Wellness Studio</p>
+          </div>
+        </div>
+        <div class="bill-meta">
+          <div class="bill-title">INVOICE</div>
+          <div class="bill-num">{{bill?.id || 'PREVIEW'}}</div>
+          <div class="bill-date">{{appointment.date | date:'MMM d, yyyy'}}</div>
+        </div>
+      </div>
+
+      <div class="bill-divider"></div>
+
+      <!-- Client & Staff -->
+      <div class="bill-parties">
+        <div class="party">
+          <div class="party-label">Billed To</div>
+          <div class="party-name">{{appointment.clientName}}</div>
+          <div class="party-sub">{{appointment.clientPhone}}</div>
+        </div>
+        <div class="party">
+          <div class="party-label">Treated By</div>
+          <div class="party-name">{{appointment.staffName}}</div>
+          <div class="party-sub">{{appointment.date | date:'EEE, MMM d'}} at {{appointment.timeSlot}}</div>
+        </div>
+      </div>
+
+      <div class="bill-divider"></div>
+
+      <!-- Services -->
+      <table class="bill-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th class="text-right">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="svc-name">{{appointment.serviceName}}</div>
+              <div class="svc-note" *ngIf="appointment.notes">Note: {{appointment.notes}}</div>
+            </td>
+            <td class="text-right">₹{{serviceAmount | number}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <div class="bill-totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>₹{{serviceAmount | number}}</span>
+        </div>
+        <div class="total-row tax-row">
+          <span>GST ({{taxRate}}%)</span>
+          <span>₹{{taxAmount | number}}</span>
+        </div>
+        <div class="total-row discount-row" *ngIf="discount > 0">
+          <span>Discount</span>
+          <span>-₹{{discount | number}}</span>
+        </div>
+        <div class="bill-divider"></div>
+        <div class="total-row grand-total">
+          <span>Total</span>
+          <span>₹{{total | number}}</span>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="bill-status" *ngIf="bill">
+        <span class="badge {{bill.status}}">{{bill.status | uppercase}}</span>
+      </div>
+
+      <div class="bill-footer">
+        <p>Thank you for visiting Lumière Salon!</p>
+        <p class="bill-footer-sub">We look forward to seeing you again.</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-panel no-print">
+      <div class="card controls-card">
+        <h4>Bill Settings</h4>
+
+        <div class="form-group" *ngIf="!billGenerated">
+          <label>Tax Rate (%)</label>
+          <input type="number" [(ngModel)]="taxRate" min="0" max="100">
+        </div>
+
+        <div class="form-group" *ngIf="!billGenerated">
+          <label>Discount (₹)</label>
+          <input type="number" [(ngModel)]="discount" min="0">
+        </div>
+
+        <div class="total-summary">
+          <div class="ts-row"><span>Service</span><span>₹{{serviceAmount | number}}</span></div>
+          <div class="ts-row"><span>Tax</span><span>₹{{taxAmount | number}}</span></div>
+          <div class="ts-row" *ngIf="discount"><span>Discount</span><span>-₹{{discount | number}}</span></div>
+          <div class="ts-total"><span>Total</span><span>₹{{total | number}}</span></div>
+        </div>
+
+        <button class="btn btn-rose" style="width:100%; justify-content:center;" *ngIf="!billGenerated" (click)="generate()">
+          <span class="material-icons">receipt_long</span> Generate Bill
+        </button>
+
+        <div *ngIf="billGenerated" class="bill-actions">
+          <div class="success-badge">
+            <span class="material-icons">check_circle</span> Bill Generated
+          </div>
+          <button class="action-btn highlight" (click)="print()">
+            <span class="material-icons">print</span> Print Bill
+          </button>
+          <button class="action-btn" (click)="shareWhatsApp()">
+            <span class="material-icons">whatsapp</span> Share via WhatsApp
+          </button>
+          <button class="action-btn" (click)="copyBill()">
+            <span class="material-icons">content_copy</span> Copy Summary
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast success" *ngIf="toast">
+  <span class="material-icons">check_circle</span> {{toast}}
+</div>

@@ -1,0 +1,87 @@
+<div class="calendar-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2>Calendar</h2>
+      <p>Click any slot to book or view an appointment</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" (click)="goToToday()">Today</button>
+      <div class="week-nav">
+        <button class="nav-btn" (click)="prevWeek()">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <span class="week-label">
+          {{weekDays[0] | date:'MMM d'}} – {{weekDays[6] | date:'MMM d, yyyy'}}
+        </span>
+        <button class="nav-btn" (click)="nextWeek()">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span class="legend-item"><span class="dot available"></span>Available</span>
+    <span class="legend-item"><span class="dot booked"></span>Booked</span>
+    <span class="legend-item"><span class="dot confirmed"></span>Confirmed</span>
+  </div>
+
+  <!-- Calendar Table -->
+  <div class="calendar-wrap">
+    <div class="calendar-scroll">
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th class="staff-col">Staff / Time</th>
+            <th *ngFor="let day of weekDays" [class.today]="isToday(day)">
+              <div class="day-header">
+                <span class="day-name">{{day | date:'EEE'}}</span>
+                <span class="day-num" [class.today-num]="isToday(day)">{{day | date:'d'}}</span>
+                <span class="day-count" *ngIf="getDayAppointmentCount(day) > 0">
+                  {{getDayAppointmentCount(day)}}
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let s of staff">
+            <tr class="staff-header-row">
+              <td colspan="8" class="staff-name-cell">
+                <div class="staff-badge" [style.background]="s.color + '22'" [style.color]="s.color">
+                  <div class="staff-avatar" [style.background]="s.color">{{s.avatar}}</div>
+                  <span>{{s.name}}</span>
+                  <span class="staff-role">{{s.role}}</span>
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let time of timeSlots" class="time-row">
+              <td class="time-cell">{{time}}</td>
+              <td *ngFor="let day of weekDays"
+                  class="slot-cell"
+                  [class.today-col]="isToday(day)"
+                  (click)="selectSlot(day, s.id, time)">
+                <div *ngIf="isSlotBooked(day, s.id, time); else emptySlot"
+                     class="booked-slot"
+                     [style.border-left-color]="getStatusColor(getAppointment(day, s.id, time)?.status || '')">
+                  <div class="slot-client">{{getAppointment(day, s.id, time)?.clientName}}</div>
+                  <div class="slot-service">{{getAppointment(day, s.id, time)?.serviceName}}</div>
+                  <span class="badge {{getAppointment(day, s.id, time)?.status}}">
+                    {{getAppointment(day, s.id, time)?.status}}
+                  </span>
+                </div>
+                <ng-template #emptySlot>
+                  <div class="empty-slot">
+                    <span class="add-icon material-icons">add</span>
+                  </div>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

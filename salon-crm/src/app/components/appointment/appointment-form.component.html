@@ -1,0 +1,127 @@
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <h2>{{isEdit ? 'Edit Appointment' : 'New Appointment'}}</h2>
+      <p>{{isEdit ? 'Update the appointment details below' : 'Fill in the details to book an appointment'}}</p>
+    </div>
+    <button class="btn btn-outline" (click)="cancel()">
+      <span class="material-icons">arrow_back</span> Back
+    </button>
+  </div>
+
+  <div class="form-layout">
+    <div class="form-card card">
+      <div class="form-section">
+        <h4 class="section-title"><span class="material-icons">person</span> Client Details</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Client Name *</label>
+            <input type="text" [(ngModel)]="form.clientName" placeholder="e.g. Neha Gupta">
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" [(ngModel)]="form.clientPhone" placeholder="+91 98765 43210">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="section-title"><span class="material-icons">event</span> Appointment Details</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Staff Member *</label>
+            <select [(ngModel)]="form.staffId" (change)="onStaffChange()">
+              <option value="" disabled>Select staff</option>
+              <option *ngFor="let s of staff" [value]="s.id">{{s.name}} – {{s.role}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date *</label>
+            <input type="date" [(ngModel)]="form.date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Time Slot *</label>
+          <div class="time-grid">
+            <button *ngFor="let t of timeSlots"
+                    type="button"
+                    class="time-btn"
+                    [class.active]="form.timeSlot === t"
+                    (click)="form.timeSlot = t">{{t}}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="section-title"><span class="material-icons">spa</span> Service</h4>
+        <div *ngFor="let cat of serviceCategories" class="service-category">
+          <div class="cat-label">{{cat}}</div>
+          <div class="service-grid">
+            <div *ngFor="let svc of getServicesByCategory(cat)"
+                 class="service-card"
+                 [class.selected]="form.serviceId === svc.id"
+                 (click)="form.serviceId = svc.id; onServiceChange()">
+              <div class="svc-name">{{svc.name}}</div>
+              <div class="svc-meta">
+                <span class="svc-price">₹{{svc.price}}</span>
+                <span class="svc-dur">{{svc.duration}}min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="section-title"><span class="material-icons">notes</span> Notes</h4>
+        <div class="form-group">
+          <textarea [(ngModel)]="form.notes" placeholder="Special instructions or preferences..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary panel -->
+    <div class="summary-panel">
+      <div class="card summary-card">
+        <h4>Booking Summary</h4>
+        <div class="summary-rows">
+          <div class="summary-row" *ngIf="form.clientName">
+            <span class="material-icons">person</span>
+            <span>{{form.clientName}}</span>
+          </div>
+          <div class="summary-row" *ngIf="selectedStaff">
+            <div class="staff-dot" [style.background]="selectedStaff.color"></div>
+            <span>{{selectedStaff.name}}</span>
+          </div>
+          <div class="summary-row" *ngIf="form.date">
+            <span class="material-icons">calendar_today</span>
+            <span>{{form.date | date:'EEE, MMM d, yyyy'}}</span>
+          </div>
+          <div class="summary-row" *ngIf="form.timeSlot">
+            <span class="material-icons">access_time</span>
+            <span>{{form.timeSlot}}</span>
+          </div>
+          <div class="summary-row" *ngIf="selectedService">
+            <span class="material-icons">spa</span>
+            <span>{{selectedService.name}}</span>
+          </div>
+        </div>
+        <div class="price-box" *ngIf="selectedService">
+          <span>Service Price</span>
+          <span class="price">₹{{selectedService.price}}</span>
+        </div>
+        <button class="btn btn-rose w-full" (click)="book()" style="width:100%; justify-content:center;">
+          <span class="material-icons">{{isEdit ? 'save' : 'event_available'}}</span>
+          {{isEdit ? 'Save Changes' : 'Book Appointment'}}
+        </button>
+        <button class="btn btn-ghost w-full" (click)="cancel()" style="width:100%; justify-content:center; margin-top:8px;">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast success" *ngIf="toast">
+    <span class="material-icons">check_circle</span> {{toast}}
+  </div>
+</div>

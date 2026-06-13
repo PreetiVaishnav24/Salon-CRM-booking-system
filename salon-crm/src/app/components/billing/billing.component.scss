@@ -1,0 +1,117 @@
+.billing-page { max-width: 1000px; }
+
+.billing-layout {
+  display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start;
+}
+
+/* BILL PREVIEW */
+.bill-preview {
+  padding: 40px;
+  background: #fff;
+}
+
+.bill-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+
+.salon-brand {
+  display: flex; align-items: center; gap: 12px;
+  .salon-icon { font-size: 32px; color: var(--rose-dark); }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--plum); letter-spacing: 3px; }
+  p { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+}
+
+.bill-meta {
+  text-align: right;
+  .bill-title { font-size: 22px; font-weight: 700; color: var(--plum); letter-spacing: 3px; }
+  .bill-num { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: monospace; }
+  .bill-date { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+}
+
+.bill-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+.bill-parties {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  .party { }
+  .party-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+  .party-name { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .party-sub { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+}
+
+.bill-table {
+  width: 100%; border-collapse: collapse;
+  thead tr {
+    border-bottom: 2px solid var(--plum);
+    th { padding: 8px 0; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--plum); }
+  }
+  tbody tr td {
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+    .svc-name { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+    .svc-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+  }
+  .text-right { text-align: right; font-weight: 600; font-size: 15px; }
+}
+
+.bill-totals {
+  margin-top: 16px;
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; font-size: 13px; color: var(--text-secondary);
+  }
+  .tax-row { color: var(--text-secondary); }
+  .discount-row { color: var(--sage); }
+  .grand-total {
+    font-size: 20px; font-weight: 700; color: var(--plum);
+    font-family: 'Cormorant Garamond', serif; padding-top: 12px;
+  }
+}
+
+.bill-status { margin: 16px 0; }
+
+.bill-footer {
+  text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
+  p { font-size: 14px; color: var(--text-secondary); font-style: italic; }
+  .bill-footer-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+}
+
+/* CONTROLS */
+.controls-card { padding: 20px; h4 { font-size: 16px; color: var(--plum); margin-bottom: 16px; } }
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;
+  label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-secondary); }
+  input { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px;
+    &:focus { outline: none; border-color: var(--rose-dark); }
+  }
+}
+
+.total-summary {
+  background: var(--ivory-dark); border-radius: var(--radius-sm); padding: 14px; margin: 16px 0;
+  .ts-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); padding: 3px 0; }
+  .ts-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--plum); padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); font-family: 'Cormorant Garamond', serif; }
+}
+
+.success-badge {
+  display: flex; align-items: center; gap: 6px; color: var(--sage);
+  font-size: 13px; font-weight: 600; margin-bottom: 12px;
+  .material-icons { font-size: 18px; }
+}
+
+.bill-actions { display: flex; flex-direction: column; gap: 4px; }
+
+.action-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--text-primary); text-align: left;
+  transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%;
+  .material-icons { font-size: 18px; color: var(--text-muted); }
+  &:hover { background: var(--rose-soft); color: var(--plum); .material-icons { color: var(--rose-dark); } }
+  &.highlight { color: var(--rose-dark); font-weight: 600; .material-icons { color: var(--rose-dark); } }
+}
+
+/* Print */
+@media print {
+  .no-print { display: none !important; }
+  .billing-layout { grid-template-columns: 1fr !important; }
+  .bill-preview { box-shadow: none !important; border: none !important; }
+}

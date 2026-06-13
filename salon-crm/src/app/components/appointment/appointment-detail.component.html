@@ -1,0 +1,176 @@
+<div class="detail-page" *ngIf="appointment">
+  <div class="page-header">
+    <div>
+      <h2>Appointment Details</h2>
+      <p>ID: {{appointment.id}}</p>
+    </div>
+    <button class="btn btn-outline" (click)="back()">
+      <span class="material-icons">arrow_back</span> All Appointments
+    </button>
+  </div>
+
+  <div class="detail-layout">
+    <div class="main-col">
+      <!-- Status Card -->
+      <div class="card status-card">
+        <div class="status-top">
+          <div class="client-info">
+            <div class="client-avatar">{{appointment.clientName.charAt(0)}}</div>
+            <div>
+              <h3>{{appointment.clientName}}</h3>
+              <p>{{appointment.clientPhone}}</p>
+            </div>
+          </div>
+          <span class="badge {{appointment.status}}">{{appointment.status}}</span>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="material-icons">calendar_today</span>
+            <div>
+              <div class="d-label">Date</div>
+              <div class="d-value">{{appointment.date | date:'EEEE, MMMM d, yyyy'}}</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">access_time</span>
+            <div>
+              <div class="d-label">Time</div>
+              <div class="d-value">{{appointment.timeSlot}}</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">spa</span>
+            <div>
+              <div class="d-label">Service</div>
+              <div class="d-value">{{appointment.serviceName}}</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">person</span>
+            <div>
+              <div class="d-label">Staff</div>
+              <div class="d-value">{{appointment.staffName}}</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">currency_rupee</span>
+            <div>
+              <div class="d-label">Service Price</div>
+              <div class="d-value price">₹{{appointment.servicePrice | number}}</div>
+            </div>
+          </div>
+          <div class="detail-item" *ngIf="appointment.notes">
+            <span class="material-icons">notes</span>
+            <div>
+              <div class="d-label">Notes</div>
+              <div class="d-value">{{appointment.notes}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Panel -->
+    <div class="actions-col">
+      <div class="card actions-card">
+        <h4>Actions</h4>
+
+        <div class="action-group" *ngIf="appointment.status !== 'cancelled'">
+          <button class="action-btn" (click)="edit()">
+            <span class="material-icons">edit</span> Edit Appointment
+          </button>
+          <button class="action-btn" (click)="reschedule()">
+            <span class="material-icons">event_repeat</span> Reschedule
+          </button>
+          <button class="action-btn" *ngIf="appointment.status === 'booked'" (click)="confirm()">
+            <span class="material-icons">check_circle</span> Confirm
+          </button>
+          <button class="action-btn" *ngIf="appointment.status === 'confirmed'" (click)="complete()">
+            <span class="material-icons">task_alt</span> Mark Completed
+          </button>
+          <button class="action-btn danger" (click)="showCancelConfirm = true">
+            <span class="material-icons">cancel</span> Cancel Appointment
+          </button>
+        </div>
+
+        <div class="action-divider"></div>
+
+        <div class="action-group">
+          <button class="action-btn highlight" (click)="generateBill()">
+            <span class="material-icons">receipt_long</span> Generate Bill
+          </button>
+        </div>
+
+        <div class="action-divider"></div>
+
+        <div class="action-group">
+          <p class="group-label">Share Details</p>
+          <button class="action-btn" (click)="share('client')">
+            <span class="material-icons">whatsapp</span> Share with Client
+          </button>
+          <button class="action-btn" (click)="share('staff')">
+            <span class="material-icons">group</span> Share with Staff
+          </button>
+          <button class="action-btn" (click)="copyDetails()">
+            <span class="material-icons">content_copy</span> Copy Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Confirm Modal -->
+  <div class="modal-overlay" *ngIf="showCancelConfirm" (click)="showCancelConfirm = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cancel Appointment?</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel <strong>{{appointment.clientName}}</strong>'s appointment on {{appointment.date}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showCancelConfirm = false">Keep it</button>
+        <button class="btn btn-danger" (click)="cancel()">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal-overlay" *ngIf="showShareModal" (click)="showShareModal = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Share Appointment</h3>
+        <button class="btn btn-ghost btn-sm" (click)="showShareModal = false">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="share-preview">
+          <p><strong>{{appointment.clientName}}</strong></p>
+          <p>{{appointment.serviceName}} with {{appointment.staffName}}</p>
+          <p>{{appointment.date}} at {{appointment.timeSlot}}</p>
+          <p class="price-text">₹{{appointment.servicePrice}}</p>
+        </div>
+        <p class="share-note">This will open WhatsApp with the appointment details pre-filled.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showShareModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="sendShare()">
+          <span class="material-icons">send</span> Send via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast success" *ngIf="toast">
+    <span class="material-icons">check_circle</span> {{toast}}
+  </div>
+</div>
+
+<div *ngIf="!appointment" class="empty-state">
+  <span class="material-icons">event_busy</span>
+  <p>Appointment not found.</p>
+  <button class="btn btn-primary" (click)="back()">Back to Appointments</button>
+</div>

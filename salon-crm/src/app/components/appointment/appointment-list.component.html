@@ -1,0 +1,80 @@
+<div class="list-page">
+  <div class="page-header">
+    <div>
+      <h2>Appointments</h2>
+      <p>{{filtered.length}} appointment{{filtered.length !== 1 ? 's' : ''}}</p>
+    </div>
+    <button class="btn btn-rose" (click)="newBooking()">
+      <span class="material-icons">add</span> New Appointment
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters card">
+    <div class="search-wrap">
+      <span class="material-icons">search</span>
+      <input type="text" [(ngModel)]="search" (input)="applyFilter()" placeholder="Search client, staff, service...">
+    </div>
+    <div class="filter-group">
+      <select [(ngModel)]="statusFilter" (change)="applyFilter()">
+        <option value="">All Status</option>
+        <option value="booked">Booked</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Service</th>
+          <th>Staff</th>
+          <th>Date & Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of filtered" (click)="view(a.id)" class="table-row">
+          <td>
+            <div class="client-cell">
+              <div class="mini-avatar">{{a.clientName.charAt(0)}}</div>
+              <div>
+                <div class="client-name">{{a.clientName}}</div>
+                <div class="client-phone">{{a.clientPhone}}</div>
+              </div>
+            </div>
+          </td>
+          <td class="service-cell">{{a.serviceName}}</td>
+          <td class="staff-cell">{{a.staffName}}</td>
+          <td class="date-cell">
+            <div>{{a.date | date:'MMM d, yyyy'}}</div>
+            <div class="time">{{a.timeSlot}}</div>
+          </td>
+          <td class="price-cell">₹{{a.servicePrice | number}}</td>
+          <td><span class="badge {{a.status}}">{{a.status}}</span></td>
+          <td class="actions-cell" (click)="$event.stopPropagation()">
+            <button class="icon-btn" (click)="view(a.id)" title="View">
+              <span class="material-icons">visibility</span>
+            </button>
+            <button class="icon-btn" (click)="billing(a.id)" title="Bill">
+              <span class="material-icons">receipt_long</span>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filtered.length === 0">
+          <td colspan="7" class="empty-row">
+            <span class="material-icons">event_busy</span>
+            <p>No appointments found</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
